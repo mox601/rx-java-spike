@@ -12,7 +12,8 @@
     <url>https://github.com/mox601/rx-java-spike</url>
 
     <properties>
-        <rxjava-core.version>0.9.0</rxjava-core.version>
+        <rxjava-core.version>0.9.1</rxjava-core.version>
+        <joda-time.version>2.2</joda-time.version>
         <slf4j-api.version>1.7.5</slf4j-api.version>
         <log4j.version>1.2.17</log4j.version>
         <testng.version>6.1.1</testng.version>
@@ -59,6 +60,14 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>com.netflix.rxjava</groupId>
+            <artifactId>rxjava-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
