@@ -29,7 +29,7 @@ public class AppTestCase {
             }
 
             @Override
-            public void onError(Exception e) {
+            public void onError(Throwable throwable) {
                 LOGGER.info("error");
             }
 
