@@ -1,6 +1,5 @@
 package org.mox.spikes.rx;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
@@ -20,13 +19,12 @@ public class Database {
             public Subscription call(final Observer<String> stringObserver) {
 
                 final Thread t = new Thread(new Runnable() {
+
                     @Override
                     public void run() {
 
                         for (int i = 0; i < 75; i++) {
-
                             stringObserver.onNext("a_value-" + i);
-
                         }
                         stringObserver.onCompleted();
                     }
@@ -34,16 +32,20 @@ public class Database {
 
                 t.start();
 
-                return new Subscription() {
+                final Subscription subscription = new Subscription() {
 
                     @Override
                     public void unsubscribe() {
 
                         t.interrupt();
+
                     }
                 };
+
+                return subscription;
             }
         };
+
         return Observable.create(func);
     }
 

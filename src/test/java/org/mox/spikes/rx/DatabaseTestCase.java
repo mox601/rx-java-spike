@@ -43,6 +43,7 @@ public class DatabaseTestCase {
         public void onError(Throwable throwable) {
 
             LOGGER.info("error: " + throwable.getMessage());
+
         }
 
         @Override
@@ -50,6 +51,7 @@ public class DatabaseTestCase {
 
             LOGGER.info("item: " + item);
             expectedValuesAmount++;
+
         }
 
     }
