@@ -12,16 +12,16 @@
     <url>https://github.com/mox601/rx-java-spike</url>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
+        <javac.src.version>1.6</javac.src.version>
+        <javac.target.version>1.6</javac.target.version>
+
         <rxjava-core.version>0.10.0</rxjava-core.version>
         <joda-time.version>2.2</joda-time.version>
         <slf4j-api.version>1.7.5</slf4j-api.version>
         <log4j.version>1.2.17</log4j.version>
         <testng.version>6.1.1</testng.version>
-
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
-        <javac.src.version>1.6</javac.src.version>
-        <javac.target.version>1.6</javac.target.version>
     </properties>
 
     <dependencyManagement>
