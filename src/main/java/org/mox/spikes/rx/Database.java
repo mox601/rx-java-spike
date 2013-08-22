@@ -23,7 +23,7 @@ public class Database {
                     @Override
                     public void run() {
 
-                        for (int i = 0; i < 75; i++) {
+                        for (int i = 0; i < 750; i++) {
                             stringObserver.onNext("a_value-" + i);
                         }
                         stringObserver.onCompleted();

@@ -21,11 +21,13 @@ public class DatabaseTestCase {
 
         LOGGER.info("abc");
 
-        final Observer<String> printer = new CountingObserver();
+        final Observer<String> counter = new CountingObserver();
 
-        Database.loadWholeDataset().subscribe(printer);
+        Database.loadWholeDataset().subscribe(counter);
         //i don't block this thread!
         LOGGER.info(Thread.currentThread().getName() + " completed at " + System.nanoTime());
+        Thread.sleep(1000);
+        assertEquals(expectedValuesAmount, 750);
     }
 
     private class CountingObserver implements Observer<String> {
@@ -35,8 +37,6 @@ public class DatabaseTestCase {
 
             LOGGER.info("completed");
             LOGGER.info(Thread.currentThread().getName() + " completed at " + System.nanoTime());
-            assertEquals(expectedValuesAmount, 75);
-
         }
 
         @Override
