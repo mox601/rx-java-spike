@@ -35,7 +35,6 @@ public class DatabaseTestCase {
         @Override
         public void onCompleted() {
 
-            LOGGER.info("completed");
             LOGGER.info(Thread.currentThread().getName() + " completed at " + System.nanoTime());
         }
 
