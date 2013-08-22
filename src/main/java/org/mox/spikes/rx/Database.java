@@ -8,13 +8,13 @@ import rx.Observer;
 import rx.Subscription;
 import rx.util.functions.Func1;
 
-public class Greeter {
+public class Database {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Greeter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Database.class);
 
-    public static Observable<String> hello(String... names) {
+    public static Observable<String> loadWholeDataset() {
 
-        Func1<Observer<String>, Subscription> func = new Func1<Observer<String>, Subscription>() {
+        final Func1<Observer<String>, Subscription> func = new Func1<Observer<String>, Subscription>() {
 
             @Override
             public Subscription call(final Observer<String> stringObserver) {
@@ -35,6 +35,7 @@ public class Greeter {
                 t.start();
 
                 return new Subscription() {
+
                     @Override
                     public void unsubscribe() {
 
