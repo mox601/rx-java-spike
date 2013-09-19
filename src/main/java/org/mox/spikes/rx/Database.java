@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
-import rx.util.functions.Func1;
 
 public class Database {
 
@@ -13,10 +12,10 @@ public class Database {
 
     public static Observable<String> loadWholeDataset() {
 
-        final Func1<Observer<String>, Subscription> func = new Func1<Observer<String>, Subscription>() {
+        final Observable.OnSubscribeFunc<String> func = new Observable.OnSubscribeFunc<String>() {
 
             @Override
-            public Subscription call(final Observer<String> stringObserver) {
+            public Subscription onSubscribe(final Observer<? super String> observer) {
 
                 final Thread t = new Thread(new Runnable() {
 
@@ -24,9 +23,9 @@ public class Database {
                     public void run() {
 
                         for (int i = 0; i < 750; i++) {
-                            stringObserver.onNext("a_value-" + i);
+                            observer.onNext("a_value-" + i);
                         }
-                        stringObserver.onCompleted();
+                        observer.onCompleted();
                     }
                 });
 
@@ -45,7 +44,6 @@ public class Database {
                 return subscription;
             }
         };
-
         return Observable.create(func);
     }
 

@@ -17,15 +17,14 @@ public class DatabaseTestCase {
     private int expectedValuesAmount;
 
     @Test
-    public void shouldBeGreen() throws InterruptedException {
-
-        LOGGER.info("abc");
+    public void shouldBeGreen() throws Exception {
 
         final Observer<String> counter = new CountingObserver();
 
         Database.loadWholeDataset().subscribe(counter);
-        //i don't block this thread!
+        //previous call doesn't block this thread!
         LOGGER.info(Thread.currentThread().getName() + " completed at " + System.nanoTime());
+        assertEquals(expectedValuesAmount, 0);
         Thread.sleep(1000);
         assertEquals(expectedValuesAmount, 750);
     }
@@ -42,7 +41,6 @@ public class DatabaseTestCase {
         public void onError(Throwable throwable) {
 
             LOGGER.info("error: " + throwable.getMessage());
-
         }
 
         @Override
@@ -50,7 +48,6 @@ public class DatabaseTestCase {
 
             LOGGER.info("item: " + item);
             expectedValuesAmount++;
-
         }
 
     }
