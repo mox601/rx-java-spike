@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
-import rx.util.functions.Func1;
+import rx.functions.Func1;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
@@ -45,6 +45,13 @@ public class TutorialTestCase {
                     public void unsubscribe() {
                         //nop
                     }
+
+                    @Override
+                    public boolean isUnsubscribed() {
+
+                        throw new UnsupportedOperationException(
+                                "not implemented yet");
+                    }
                 };
             }
         };
@@ -65,7 +72,7 @@ public class TutorialTestCase {
             @Override
             public void onNext(Integer args) {
 
-                LOGGER.info(args + "");
+//                LOGGER.info(args + "");
 
             }
         };
@@ -114,7 +121,7 @@ public class TutorialTestCase {
         @Override
         public void onError(Throwable e) {
 
-            LOGGER.info("" + e.toString());
+            LOGGER.error("" + e.toString());
         }
 
         @Override
