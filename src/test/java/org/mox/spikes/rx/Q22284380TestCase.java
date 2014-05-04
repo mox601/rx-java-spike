@@ -26,7 +26,7 @@ public class Q22284380TestCase {
     @Test
     public void testName() throws Exception {
 
-        final Observable.OnSubscribe<Integer> onSubscribe = new Observable.OnSubscribe<Integer>() {
+        final Observable.OnSubscribe<Integer> onSubProduceTwoValues = new Observable.OnSubscribe<Integer>() {
 
             @Override
             public void call(final Subscriber<? super Integer> subscriber) {
@@ -52,20 +52,20 @@ public class Q22284380TestCase {
             }
         };
 
-        final Observable<Integer> valueObservable = Observable.create(onSubscribe);
+        final Observable<Integer> values = Observable.create(onSubProduceTwoValues);
 
-        final Observable<Integer> twiceObservable = valueObservable
+        final Observable<Integer> byTwoMultiplier = values
                 .flatMap(new Func1<Integer, Observable<Integer>>() {
 
                     @Override
-                    public Observable<Integer> call(Integer integevalue) {
+                    public Observable<Integer> call(Integer aValue) {
 
-                        return doubleIt(integevalue);
+                        return doubleIt(aValue);
 
                     }
                 });
 
-        twiceObservable.subscribe(new Subscriber<Integer>() {
+        byTwoMultiplier.subscribe(new Subscriber<Integer>() {
 
             @Override
             public void onNext(Integer a) {
@@ -83,6 +83,7 @@ public class Q22284380TestCase {
 
             @Override
             public void onError(Throwable e) {
+
                 LOGGER.error(e.getMessage());
             }
         });
