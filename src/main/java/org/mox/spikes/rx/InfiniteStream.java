@@ -3,8 +3,7 @@ package org.mox.spikes.rx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
-import rx.Observer;
-import rx.Subscription;
+import rx.Subscriber;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -33,45 +32,31 @@ public class InfiniteStream {
 
     public Observable<String> start() {
 
-        return Observable.create(new Observable.OnSubscribeFunc<String>() {
+        final Observable.OnSubscribe<String> stringOnSubscribe = new Observable.OnSubscribe<String>() {
 
             @Override
-            public Subscription onSubscribe(
-                    final Observer<? super String> observer) {
+            public void call(final Subscriber<? super String> subscriber) {
 
-                final Future<?> future = executorService.submit(new Runnable() {
+                final Runnable runnable = new Runnable() {
 
                     @Override
                     public void run() {
 
                         while (running) {
 
-                            observer.onNext(empty);
+                            subscriber.onNext(empty);
                         }
 
-//                        LOGGER.info("completed");
-
-                        observer.onCompleted();
-                    }
-                });
-
-                return new Subscription() {
-
-                    @Override
-                    public void unsubscribe() {
-
-                        running = false;
-                        future.cancel(true);
-                    }
-
-                    @Override
-                    public boolean isUnsubscribed() {
-
-                        throw new UnsupportedOperationException(
-                                "not implemented yet");
+                        subscriber.onCompleted();
                     }
                 };
+
+                final Future<?> future = executorService.submit(runnable);
+
             }
-        });
+        };
+
+        return Observable.create(stringOnSubscribe);
+
     }
 }

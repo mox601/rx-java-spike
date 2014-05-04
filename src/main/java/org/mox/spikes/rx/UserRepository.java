@@ -4,8 +4,7 @@ import org.mox.spikes.rx.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
-import rx.Observer;
-import rx.Subscription;
+import rx.Subscriber;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -30,12 +29,12 @@ public class UserRepository {
 
     public Observable<User> getUser(final String userId) {
 
-        return Observable.create(new Observable.OnSubscribeFunc<User>() {
+        final Observable.OnSubscribe<User> userOnSubscribe = new Observable.OnSubscribe<User>() {
 
             @Override
-            public Subscription onSubscribe(final Observer<? super User> observer) {
+            public void call(final Subscriber<? super User> subscriber) {
 
-                Runnable userProducer = new Runnable() {
+                final Runnable userProducer = new Runnable() {
 
                     @Override
                     public void run() {
@@ -45,35 +44,21 @@ public class UserRepository {
                         try {
 
                             aUser = databaseRepository.loadById(userId);
-                            observer.onNext(aUser);
-                            observer.onCompleted();
+                            subscriber.onNext(aUser);
+                            subscriber.onCompleted();
 
                         } catch (InterruptedException e) {
-                            observer.onError(e);
+                            subscriber.onError(e);
                         }
                     }
                 };
 
-                //uses an executor
                 final Future<?> submitted = executorService.submit(userProducer);
 
-                return new Subscription() {
-
-                    @Override
-                    public void unsubscribe() {
-
-                        submitted.cancel(true);
-                    }
-
-                    @Override
-                    public boolean isUnsubscribed() {
-
-                        throw new UnsupportedOperationException(
-                                "not implemented yet");
-                    }
-                };
             }
-        });
+        };
+
+        return Observable.create(userOnSubscribe);
 
     }
 

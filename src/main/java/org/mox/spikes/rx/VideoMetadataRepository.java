@@ -5,8 +5,7 @@ import org.mox.spikes.rx.model.VideoMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
-import rx.Observer;
-import rx.Subscription;
+import rx.Subscriber;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -30,46 +29,39 @@ public class VideoMetadataRepository {
                                                       final String language) {
 
         final VideoId id = new VideoId(videoId);
+
         final VideoMetadata houseOfCards =
                 new VideoMetadata(id, "House of Cards, episode 1 in " + language,
                                   "David Fincher", 3365L);
 
-        return Observable.create(new Observable.OnSubscribeFunc<VideoMetadata>() {
-
-            @Override
-            public Subscription onSubscribe(
-                    final Observer<? super VideoMetadata> observer) {
-
-                Runnable videoMetadataProducer = new Runnable() {
+        final Observable.OnSubscribe<VideoMetadata> videoMetadataObservable =
+                new Observable.OnSubscribe<VideoMetadata>() {
 
                     @Override
-                    public void run() {
+                    public void call(
+                            final Subscriber<? super VideoMetadata> subscriber) {
 
-                        observer.onNext(houseOfCards);
-                        observer.onCompleted();
+                        Runnable videoMetadataProducer = new Runnable() {
+
+                            @Override
+                            public void run() {
+
+                                try {
+                                    subscriber.onNext(houseOfCards);
+                                    subscriber.onCompleted();
+                                } catch (Throwable e) {
+                                    subscriber.onError(e);
+                                }
+
+                            }
+                        };
+
+                        final Future<?> submit = executorService.submit(
+                                videoMetadataProducer);
                     }
                 };
 
-                final Future<?> submit = executorService.submit(
-                        videoMetadataProducer);
+        return Observable.create(videoMetadataObservable);
 
-                return new Subscription() {
-
-                    @Override
-                    public void unsubscribe() {
-
-                        submit.cancel(true);
-
-                    }
-
-                    @Override
-                    public boolean isUnsubscribed() {
-
-                        throw new UnsupportedOperationException(
-                                "not implemented yet");
-                    }
-                };
-            }
-        });
     }
 }

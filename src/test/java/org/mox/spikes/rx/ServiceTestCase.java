@@ -56,6 +56,7 @@ public class ServiceTestCase {
     public void testVideoForUser() throws Exception {
 
         final Long startNsec = System.nanoTime();
+
         final Observable<VideoDTO> videoForUser = this.service
                 .getVideoForUser("12345", "78965");
 

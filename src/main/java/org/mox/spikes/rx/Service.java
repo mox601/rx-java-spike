@@ -29,7 +29,7 @@ public class Service {
 
     private final VideoMetadataRepository videoMetadataRepository;
 
-    private BookmarkRepository bookmarkRepository;
+    private final BookmarkRepository bookmarkRepository;
 
     public Service(final UserRepository userRepository,
                    final VideoMetadataRepository videoMetadataRepository,
