@@ -62,7 +62,7 @@ public class UserRepository {
 
     }
 
-    // this acts as a classic, blocking backend repository
+    // TODO Is this acting as a classic, blocking backend repository?
     private class BlockingDbRepository {
 
         public User loadById(String userId) throws InterruptedException {

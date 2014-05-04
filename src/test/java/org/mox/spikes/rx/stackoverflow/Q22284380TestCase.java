@@ -1,4 +1,4 @@
-package org.mox.spikes.rx;
+package org.mox.spikes.rx.stackoverflow;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
