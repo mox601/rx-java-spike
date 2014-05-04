@@ -34,6 +34,7 @@ public class ServiceTestCase {
         final Runtime runtime = Runtime.getRuntime();
         final int availableProcessors = runtime.availableProcessors();
         this.executorService = Executors.newFixedThreadPool(availableProcessors);
+
         final UserRepository aUserRepository = new UserRepository(
                 this.executorService);
         final VideoMetadataRepository videoMetadataRepository = new VideoMetadataRepository(
@@ -61,9 +62,9 @@ public class ServiceTestCase {
                 .getVideoForUser("12345", "78965");
 
         final Subscription subscription = videoForUser.subscribe(
-                new ItemLogger(),
-                new ThrowableMessageLogger(),
-                new ElapsedTimeLogger(startNsec)
+                new OnNextItemLogger(),
+                new OnErrorThrowableMessageLogger(),
+                new OnCompleteElapsedTimeLogger(startNsec)
         );
 
         final Long end = System.nanoTime();
@@ -75,11 +76,11 @@ public class ServiceTestCase {
 
     }
 
-    private class ElapsedTimeLogger implements Action0 {
+    private class OnCompleteElapsedTimeLogger implements Action0 {
 
         private final long startNsec;
 
-        private ElapsedTimeLogger(long startNsec) {
+        private OnCompleteElapsedTimeLogger(long startNsec) {
 
             this.startNsec = startNsec;
         }
@@ -93,7 +94,7 @@ public class ServiceTestCase {
         }
     }
 
-    private class ThrowableMessageLogger implements Action1<Throwable> {
+    private class OnErrorThrowableMessageLogger implements Action1<Throwable> {
 
         @Override
         public void call(Throwable throwable) {
@@ -102,7 +103,7 @@ public class ServiceTestCase {
         }
     }
 
-    private class ItemLogger implements Action1<VideoDTO> {
+    private class OnNextItemLogger implements Action1<VideoDTO> {
 
         @Override
         public void call(VideoDTO videoDTO) {
