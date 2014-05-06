@@ -59,4 +59,8 @@ public class InfiniteStream {
         return Observable.create(stringOnSubscribe);
 
     }
+
+    public void stop() {
+        this.running = false;
+    }
 }

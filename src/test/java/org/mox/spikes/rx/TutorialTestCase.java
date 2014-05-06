@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 import rx.Observable;
 import rx.Observer;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.functions.Func1;
 
@@ -19,7 +20,8 @@ import static org.testng.Assert.assertTrue;
  */
 public class TutorialTestCase {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TutorialTestCase.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+            TutorialTestCase.class);
 
     @Test
     public void testBuildObservables() throws Exception {
@@ -28,57 +30,42 @@ public class TutorialTestCase {
 
         //single item
         Integer anyObject = 3;
+
         Observable<Integer> just = Observable.from(anyObject);
 
         //from scratch
-        Observable.OnSubscribeFunc<Integer> aSingleItem = new Observable.OnSubscribeFunc<Integer>() {
+        Observable.OnSubscribe<Integer> aSingleItem = new Observable.OnSubscribe<Integer>() {
 
             @Override
-            public Subscription onSubscribe(Observer<? super Integer> observer) {
+            public void call(Subscriber<? super Integer> subscriber) {
 
-                observer.onNext(1);
-                observer.onCompleted();
+                subscriber.onNext(1);
+                subscriber.onCompleted();
 
-                return new Subscription() {
-
-                    @Override
-                    public void unsubscribe() {
-                        //nop
-                    }
-
-                    @Override
-                    public boolean isUnsubscribed() {
-
-                        throw new UnsupportedOperationException(
-                                "not implemented yet");
-                    }
-                };
             }
         };
+
         Observable<Integer> integerObservable = Observable.create(aSingleItem);
 
         Observer<Integer> aLoggingObserver = new Observer<Integer>() {
 
             @Override
             public void onCompleted() {
-                //
+
             }
 
             @Override
             public void onError(Throwable e) {
-                //
+
             }
 
             @Override
             public void onNext(Integer args) {
 
-//                LOGGER.info(args + "");
-
             }
         };
         integerObservable.subscribe(aLoggingObserver);
 
-        //
         Observable<Long> interval = Observable.interval(10, TimeUnit.MILLISECONDS);
 
     }
@@ -101,13 +88,14 @@ public class TutorialTestCase {
         final Observable<String> users = someInts.map(userLoader);
 
         final Subscription subscription = users.subscribe(observer);
+
         Thread.sleep(100L);
 
         assertTrue(observer.completed);
 
     }
 
-    private class Completable implements Observer<String> {
+    private static class Completable implements Observer<String> {
 
         private boolean completed;
 

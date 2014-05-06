@@ -14,24 +14,31 @@ public class NonBlockingIo {
     @Test
     public void testReadFile() throws Exception {
 
-        RandomAccessFile aFile = new RandomAccessFile("", "rw");
-        FileChannel inChannel = aFile.getChannel();
+        //TODO how to set encoding?
+        //how to demonstrate non-blocking behaviour?
 
-        ByteBuffer buf = ByteBuffer.allocate(48);
+        final RandomAccessFile aFile = new RandomAccessFile(
+                "src/test/resources/log4j.properties", "rw");
+        final FileChannel inChannel = aFile.getChannel();
+
+        ByteBuffer buf = ByteBuffer.allocate(8);
 
         int bytesRead = inChannel.read(buf);
+
         while (bytesRead != -1) {
 
-            System.out.println("Read " + bytesRead);
             buf.flip();
 
-            while(buf.hasRemaining()){
-                System.out.print((char) buf.get());
+            while (buf.hasRemaining()) {
+                final char c = (char) buf.get();
+                System.out.print(c);
             }
 
             buf.clear();
+
             bytesRead = inChannel.read(buf);
         }
+
         aFile.close();
 
 

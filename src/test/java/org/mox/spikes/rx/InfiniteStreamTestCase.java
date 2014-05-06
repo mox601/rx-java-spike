@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import rx.Observable;
+import rx.Scheduler;
 import rx.Subscription;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -34,21 +35,19 @@ public class InfiniteStreamTestCase {
     }
 
     @Test
-    public void testName() throws Exception {
+    public void shouldConsumeStreamForAWhile() throws Exception {
 
-        this.counter = new AtomicLong(0L);
-
-        int amount = 4;
-        int nThreads = 4;
+        final int amount = 4;
+        final int nThreads = 4;
 
         final ExecutorService executorService = Executors.newFixedThreadPool(
                 nThreads);
         final InfiniteStream infiniteStream = new InfiniteStream(executorService);
         final Observable<String> start = infiniteStream.start();
 
-        final Counter onNext = new Counter();
+        final Counter onNext = new Counter(this.counter);
 
-        List<Subscription> subscriptionList = new ArrayList<Subscription>();
+        final List<Subscription> subscriptionList = new ArrayList<Subscription>();
 
         for (int i = 0; i < amount; i++) {
             subscriptionList.add(start.subscribe(onNext));
@@ -56,9 +55,11 @@ public class InfiniteStreamTestCase {
 
         Thread.sleep(1000L);
 
-        for (Subscription aSubscription : subscriptionList) {
+        for (final Subscription aSubscription : subscriptionList) {
             aSubscription.unsubscribe();
         }
+
+        infiniteStream.stop();
 
         executorService.shutdown();
         LOGGER.info("count: " + counter.get());
@@ -66,17 +67,19 @@ public class InfiniteStreamTestCase {
     }
 
     @Test
-    public void testRepeatingStream() throws Exception {
+    public void shouldConsumeRepeatingStream() throws Exception {
 
-        int nThreads = 1;
+        final int nThreads = 1;
 
         final ExecutorService executorService = Executors.newFixedThreadPool(
                 nThreads);
 
-        final Counter counter = new Counter();
-        final Observable<String> repeat = Observable.from(Arrays.asList("1", "2"))
-                                                    .repeat(Schedulers.computation());
+        final List<String> aList = Arrays.asList("1", "2");
+        final Scheduler computationScheduler = Schedulers.computation();
+        final Observable<String> repeat = Observable.from(aList)
+                                                    .repeat(computationScheduler);
 
+        final Counter counter = new Counter(this.counter);
         final Subscription aSubscription = repeat.subscribe(counter);
 
         Thread.sleep(1000L);
@@ -89,12 +92,19 @@ public class InfiniteStreamTestCase {
 
     }
 
-    private class Counter implements Action1<String> {
+    private static class Counter implements Action1<String> {
+
+        private AtomicLong counter;
+
+        private Counter(final AtomicLong counter) {
+
+            this.counter = counter;
+        }
 
         @Override
         public void call(final String s) {
 
-            counter.incrementAndGet();
+            this.counter.incrementAndGet();
         }
     }
 }

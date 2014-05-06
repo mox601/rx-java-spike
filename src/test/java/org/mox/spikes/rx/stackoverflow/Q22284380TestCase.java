@@ -111,7 +111,6 @@ public class Q22284380TestCase {
                         } catch (Throwable e) {
                             subscriber.onError(e);
                         }
-
                     }
                 });
 
