@@ -23,6 +23,7 @@ public class NonBlockingIo {
 
         ByteBuffer buf = ByteBuffer.allocate(8);
 
+        //non-blocking
         int bytesRead = inChannel.read(buf);
 
         while (bytesRead != -1) {
