@@ -127,15 +127,16 @@ public class RxNettyExample {
         });
 
         client.submit(HttpClientRequest.createGet("/data"))
-              .flatMap(new Func1<HttpClientResponse<ByteBuf>, Observable<ByteBuf>>() {
+              .flatMap(
+                      new Func1<HttpClientResponse<ByteBuf>, Observable<ByteBuf>>() {
 
-                  @Override
-                  public Observable<ByteBuf> call(
-                          HttpClientResponse<ByteBuf> byteBufHttpClientResponse) {
+                          @Override
+                          public Observable<ByteBuf> call(
+                                  HttpClientResponse<ByteBuf> byteBufHttpClientResponse) {
 
-                      return byteBufHttpClientResponse.getContent();
-                  }
-              })
+                              return byteBufHttpClientResponse.getContent();
+                          }
+                      })
               .map(new Func1<ByteBuf, String>() {
 
                   @Override
