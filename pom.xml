@@ -36,6 +36,11 @@
             </dependency>
             <dependency>
                 <groupId>com.netflix.rxjava</groupId>
+                <artifactId>rxjava-math</artifactId>
+                <version>${rxjava-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netflix.rxjava</groupId>
                 <artifactId>rxjava-apache-http</artifactId>
                 <version>${rxjava-core.version}</version>
             </dependency>
