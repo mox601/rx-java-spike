@@ -15,7 +15,7 @@ import static org.testng.Assert.assertEquals;
 public class RxTestCase {
 
     @Test
-    public void shouldUseTestScheduler() throws Exception {
+    public void shouldDouble() throws Exception {
 
         final Observable<Integer> twoItems = Observable.from(1, 2);
         final Observable<Integer> doubler = twoItems.map(
