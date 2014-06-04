@@ -8,7 +8,6 @@ import rx.Observable;
 import rx.Subscriber;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
@@ -56,8 +55,7 @@ public class VideoMetadataRepository {
                             }
                         };
 
-                        final Future<?> submit = executorService.submit(
-                                videoMetadataProducer);
+                        executorService.submit(videoMetadataProducer);
                     }
                 };
 

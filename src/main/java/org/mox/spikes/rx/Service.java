@@ -100,7 +100,7 @@ public class Service {
         }
     }
 
-    private class MapToVideoDTO implements Func1<Map<String, Object>, VideoDTO> {
+    private static class MapToVideoDTO implements Func1<Map<String, Object>, VideoDTO> {
 
         private final String videoId;
 
@@ -130,7 +130,7 @@ public class Service {
         }
     }
 
-    private class UserToDTO implements Func1<User, UserDTO> {
+    private static class UserToDTO implements Func1<User, UserDTO> {
 
         @Override
         public UserDTO call(final User user) {
@@ -140,7 +140,7 @@ public class Service {
         }
     }
 
-    private class BookmarkToDTO implements Func1<Bookmark, BookmarkDTO> {
+    private static class BookmarkToDTO implements Func1<Bookmark, BookmarkDTO> {
 
         @Override
         public BookmarkDTO call(final Bookmark bookmark) {
@@ -152,7 +152,7 @@ public class Service {
         }
     }
 
-    private class ZipObjectsInMap implements
+    private static class ZipObjectsInMap implements
                                   Func3<BookmarkDTO, VideoMetadata, UserDTO, Map<String, Object>> {
 
         @Override

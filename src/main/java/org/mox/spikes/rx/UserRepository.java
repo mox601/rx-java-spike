@@ -7,7 +7,6 @@ import rx.Observable;
 import rx.Subscriber;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
@@ -53,7 +52,7 @@ public class UserRepository {
                     }
                 };
 
-                final Future<?> submitted = executorService.submit(userProducer);
+                executorService.submit(userProducer);
 
             }
         };
@@ -63,7 +62,7 @@ public class UserRepository {
     }
 
     // TODO Is this acting as a classic, blocking backend repository?
-    private class BlockingDbRepository {
+    private static class BlockingDbRepository {
 
         public User loadById(String userId) throws InterruptedException {
 

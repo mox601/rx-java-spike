@@ -30,7 +30,7 @@ public class RxTestCase {
         );
 
         final BlockingObservable<Integer> integerBlockingObservable = doubler
-                .toBlockingObservable();
+                .toBlocking();
 
         final Iterator<Integer> iterator = integerBlockingObservable.getIterator();
         assertEquals(iterator.next(), Integer.valueOf(2));

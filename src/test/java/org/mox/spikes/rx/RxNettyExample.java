@@ -13,6 +13,7 @@ import io.reactivex.netty.protocol.http.server.RequestHandler;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.subjects.PublishSubject;
 
 import java.nio.charset.Charset;
 
@@ -22,6 +23,8 @@ import java.nio.charset.Charset;
 public class RxNettyExample {
 
     public static void main(String[] args) throws InterruptedException {
+
+        final PublishSubject<String> publisher = PublishSubject.create();
 
         HttpServer<ByteBuf, ByteBuf> server =
                 RxNetty.createHttpServer(8080,
@@ -39,6 +42,9 @@ public class RxNettyExample {
                                         throw new RuntimeException(
                                                 "forced error");
                                     }
+
+                                    publisher.onNext("input data");
+
                                     response.setStatus(
                                             HttpResponseStatus.OK);
                                     return response
@@ -59,6 +65,7 @@ public class RxNettyExample {
                                                     "Error 500: Bad Request\n");
                                 }
                             }
+
                         }
                 );
 
