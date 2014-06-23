@@ -39,7 +39,7 @@ public class BackPressureTestCase {
             }
         }).throttleFirst(500, TimeUnit.MILLISECONDS)
                   .take(5)
-                  .toBlockingObservable()
+                  .toBlocking()
                   .forEach(new Action1<Object>() {
 
                       @Override

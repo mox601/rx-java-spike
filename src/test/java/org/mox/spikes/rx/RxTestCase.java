@@ -43,7 +43,7 @@ public class RxTestCase {
         final Observable<String> aName = Observable.just("this");
         final Observable<Integer> length = length(aName);
         final BlockingObservable<Integer> blockingObservable = length
-                .toBlockingObservable();
+                .toBlocking();
         assertEquals(blockingObservable.single(), Integer.valueOf(4));
     }
 

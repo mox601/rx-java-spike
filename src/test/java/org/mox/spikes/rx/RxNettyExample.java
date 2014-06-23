@@ -95,7 +95,7 @@ public class RxNettyExample {
                               Charset.defaultCharset());
                   }
               })
-              .toBlockingObservable().forEach(new Action1<String>() {
+              .toBlocking().forEach(new Action1<String>() {
 
             @Override
             public void call(String s) {
@@ -124,7 +124,7 @@ public class RxNettyExample {
                       return "Client => " + data.toString(Charset.defaultCharset());
                   }
               })
-              .toBlockingObservable().forEach(new Action1<String>() {
+              .toBlocking().forEach(new Action1<String>() {
 
             @Override
             public void call(String s) {
@@ -152,7 +152,7 @@ public class RxNettyExample {
                       return "Client => " + o.toString(Charset.defaultCharset());
                   }
               })
-              .toBlockingObservable().forEach(new Action1<String>() {
+              .toBlocking().forEach(new Action1<String>() {
 
             @Override
             public void call(String s) {
