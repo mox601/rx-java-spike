@@ -13,8 +13,7 @@ import java.util.concurrent.ExecutorService;
  */
 public class UserRepository {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(
-            UserRepository.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserRepository.class);
 
     public final ExecutorService executorService;
 

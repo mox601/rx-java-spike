@@ -71,10 +71,8 @@ public class Service {
                                userDTOObservable,
                                new ZipObjectsInMap());
 
-        final Observable<VideoDTO> videoDto = zippedObservablesAsMap
+        return zippedObservablesAsMap
                 .map(new MapToVideoDTO(videoId, userId));
-
-        return videoDto;
     }
 
     private static class UserDTO {
@@ -145,10 +143,8 @@ public class Service {
         @Override
         public BookmarkDTO call(final Bookmark bookmark) {
 
-            final BookmarkDTO bookmarkDTO = new BookmarkDTO(
+            return new BookmarkDTO(
                     bookmark.getPosition());
-
-            return bookmarkDTO;
         }
     }
 
@@ -162,7 +158,7 @@ public class Service {
                 final UserDTO userDto) {
 
             final Map<String, Object> stringMapMap =
-                    new HashMap<String, Object>();
+                    new HashMap<String, Object>(3);
 
             stringMapMap.put("bookmark-map", bookmarkMap);
             stringMapMap.put("metadata-map",

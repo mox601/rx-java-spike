@@ -2,15 +2,17 @@ package org.mox.spikes.rx.nio;
 
 import org.testng.annotations.Test;
 import rx.Observable;
-import rx.Subscriber;
+import rx.functions.Func1;
+import rx.observables.StringObservable;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+
+import static org.mox.spikes.rx.FileLinesObservable.scan;
+import static org.testng.Assert.assertEquals;
+import static rx.Observable.from;
+import static rx.observables.StringObservable.byLine;
 
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
@@ -61,71 +63,20 @@ public class NonBlockingIo {
     @Test
     public void testCase() throws Exception {
 
-        final Observable<String> fileLinesObservable = Observable.create(
-                new Observable.OnSubscribe<String>() {
-                    @Override
-                    public void call(final Subscriber<? super String> subscriber) {
-
-                        final Runnable runnable = new Runnable() {
-                            @Override
-                            public void run() {
-
-                                final RandomAccessFile aFile;
-
-                                try {
-                                    aFile = new RandomAccessFile(
-                                            "src/test/resources/log4j.properties", "rw");
-
-                                    final FileChannel inChannel = aFile.getChannel();
-
-                                    final ByteBuffer buf = ByteBuffer.allocate(8);
-
-                                    //non-blocking
-                                    int bytesRead = inChannel.read(buf);
-
-                                    StringBuilder sb = new StringBuilder();
-
-                                    while (bytesRead != -1 && !subscriber.isUnsubscribed()) {
-
-                                        buf.flip();
-
-                                        // TODO read https://github.com/Netflix/RxJava/wiki/String-Observables#byline
-                                        // emit each buffer contents, and then use byLine to emit one line at a time
-                                        while (buf.hasRemaining() && !subscriber.isUnsubscribed()) {
-                                            final char c = (char) buf.get();
-
-                                            sb.append(c);
-                                            if (c == '\n') {
-                                                //line ended, emit
-                                                subscriber.onNext(sb.toString());
-                                                sb = new StringBuilder();
-                                            }
-                                        }
-
-                                        buf.clear();
-
-                                        bytesRead = inChannel.read(buf);
-                                    }
-
-                                    aFile.close();
-
-                                    subscriber.onCompleted();
-
-                                } catch (FileNotFoundException e) {
-                                    subscriber.onError(e);
-                                } catch (IOException e) {
-                                    subscriber.onError(e);
-                                }
-
-                            }
-                        };
-
-                        //TODO fix threading behaviour
-                        final ExecutorService executor = Executors.newFixedThreadPool(4);
-                        executor.submit(runnable);
-
-                    }
-                });
+        final RandomAccessFile aFile = new RandomAccessFile("src/test/resources/log4j.properties",
+                "r");
+        assertEquals(byLine(scan(aFile)).flatMap(new LineToString()).first().toBlocking().single(),
+                "log4j.rootLogger=INFO, A1");
 
     }
+
+    private static class LineToString implements Func1<StringObservable.Line, Observable<String>> {
+
+        @Override
+        public Observable<String> call(final StringObservable.Line line) {
+
+            return from(line.getText());
+        }
+    }
+
 }

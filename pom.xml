@@ -50,6 +50,11 @@
                 <version>0.3.5</version>
             </dependency>
             <dependency>
+                <groupId>com.netflix.rxjava</groupId>
+                <artifactId>rxjava-string</artifactId>
+                <version>${rxjava-core.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.netflix.numerus</groupId>
                 <artifactId>numerus</artifactId>
                 <version>1.1</version>
@@ -94,6 +99,10 @@
         <dependency>
             <groupId>com.netflix.rxnetty</groupId>
             <artifactId>rx-netty</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.netflix.rxjava</groupId>
+            <artifactId>rxjava-string</artifactId>
         </dependency>
         <dependency>
             <groupId>joda-time</groupId>
