@@ -11,7 +11,7 @@ import java.nio.channels.FileChannel;
 
 import static org.mox.spikes.rx.FileLinesObservable.scan;
 import static org.testng.Assert.assertEquals;
-import static rx.Observable.from;
+import static rx.Observable.just;
 import static rx.observables.StringObservable.byLine;
 
 /**
@@ -75,7 +75,7 @@ public class NonBlockingIo {
         @Override
         public Observable<String> call(final StringObservable.Line line) {
 
-            return from(line.getText());
+            return just(line.getText());
         }
     }
 

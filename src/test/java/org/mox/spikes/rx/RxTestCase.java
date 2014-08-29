@@ -8,6 +8,7 @@ import rx.observables.BlockingObservable;
 import java.util.Iterator;
 
 import static org.testng.Assert.assertEquals;
+import static rx.Observable.just;
 
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
@@ -17,7 +18,7 @@ public class RxTestCase {
     @Test
     public void shouldDouble() throws Exception {
 
-        final Observable<Integer> twoItems = Observable.from(1, 2);
+        final Observable<Integer> twoItems = just(1, 2);
         final Observable<Integer> doubler = twoItems.map(
                 new Func1<Integer, Integer>() {
 
@@ -40,7 +41,7 @@ public class RxTestCase {
     @Test
     public void shouldCalculateLength() throws Exception {
 
-        final Observable<String> aName = Observable.just("this");
+        final Observable<String> aName = just("this");
         final Observable<Integer> length = length(aName);
         final BlockingObservable<Integer> blockingObservable = length
                 .toBlocking();
