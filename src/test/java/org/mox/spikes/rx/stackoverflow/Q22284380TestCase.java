@@ -10,6 +10,7 @@ import rx.functions.Func1;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.testng.Assert.assertTrue;
+import static rx.Observable.create;
 
 /**
  * http://stackoverflow.com/questions/22284380/composing-async-observables-that-have-dependencies-using-rxjava
@@ -52,7 +53,7 @@ public class Q22284380TestCase {
             }
         };
 
-        final Observable<Integer> values = Observable.create(onSubProduceTwoValues);
+        final Observable<Integer> values = create(onSubProduceTwoValues);
 
         final Observable<Integer> byTwoMultiplier = values
                 .flatMap(new Func1<Integer, Observable<Integer>>() {
@@ -95,7 +96,7 @@ public class Q22284380TestCase {
 
     private Observable<Integer> doubleIt(final Integer value) {
 
-        return Observable.create(new Observable.OnSubscribe<Integer>() {
+        return create(new Observable.OnSubscribe<Integer>() {
 
             @Override
             public void call(final Subscriber<? super Integer> subscriber) {

@@ -9,6 +9,8 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+import static rx.Observable.create;
+
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
  */
@@ -16,7 +18,7 @@ public class FileLinesObservable {
 
     public static Observable<String> scan(final RandomAccessFile aFile) {
 
-        return Observable.create(new Observable.OnSubscribe<String>() {
+        return create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(final Subscriber<? super String> subscriber) {
 
@@ -43,20 +45,29 @@ public class FileLinesObservable {
                                     final char c = (char) buf.get();
                                     sb.append(c);
                                 }
-                                //TODO don't emit if unsubscribed
 
-                                //buffer finished, emit it
-                                subscriber.onNext(sb.toString());
-                                //reset sb
-                                sb = new StringBuilder();
+                                // don't emit if unsubscribed
 
-                                buf.clear();
+                                if (!subscriber.isUnsubscribed()) {
 
-                                bytesRead = inChannel.read(buf);
+                                    //buffer finished, emit it
+                                    subscriber.onNext(sb.toString());
+                                    //reset sb
+                                    sb = new StringBuilder();
+
+                                    buf.clear();
+
+                                    bytesRead = inChannel.read(buf);
+                                }
+
                             }
 
                             //TODO does the order count?
-                            aFile.close();
+                            try {
+                                aFile.close();
+                            } catch (IOException e) {
+                                //nop
+                            }
                             subscriber.onCompleted();
 
                         } catch (FileNotFoundException e) {

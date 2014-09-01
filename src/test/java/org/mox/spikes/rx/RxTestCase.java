@@ -7,6 +7,7 @@ import rx.observables.BlockingObservable;
 
 import java.util.Iterator;
 
+import static java.lang.Integer.valueOf;
 import static org.testng.Assert.assertEquals;
 import static rx.Observable.just;
 
@@ -34,8 +35,8 @@ public class RxTestCase {
                 .toBlocking();
 
         final Iterator<Integer> iterator = integerBlockingObservable.getIterator();
-        assertEquals(iterator.next(), Integer.valueOf(2));
-        assertEquals(iterator.next(), Integer.valueOf(4));
+        assertEquals(iterator.next(), valueOf(2));
+        assertEquals(iterator.next(), valueOf(4));
     }
 
     @Test
@@ -45,7 +46,7 @@ public class RxTestCase {
         final Observable<Integer> length = length(aName);
         final BlockingObservable<Integer> blockingObservable = length
                 .toBlocking();
-        assertEquals(blockingObservable.single(), Integer.valueOf(4));
+        assertEquals(blockingObservable.single(), valueOf(4));
     }
 
     private Observable<Integer> length(final Observable<String> stringObservable) {

@@ -1,9 +1,6 @@
 package org.mox.spikes.rx.nio;
 
 import org.testng.annotations.Test;
-import rx.Observable;
-import rx.functions.Func1;
-import rx.observables.StringObservable;
 
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -11,7 +8,6 @@ import java.nio.channels.FileChannel;
 
 import static org.mox.spikes.rx.FileLinesObservable.scan;
 import static org.testng.Assert.assertEquals;
-import static rx.Observable.just;
 import static rx.observables.StringObservable.byLine;
 
 /**
@@ -56,8 +52,6 @@ public class NonBlockingIo {
         }
 
         aFile.close();
-
-        //TODO wrap all this file reading in an Observable<String>
     }
 
     @Test
@@ -65,18 +59,9 @@ public class NonBlockingIo {
 
         final RandomAccessFile aFile = new RandomAccessFile("src/test/resources/log4j.properties",
                 "r");
-        assertEquals(byLine(scan(aFile)).flatMap(new LineToString()).first().toBlocking().single(),
+        assertEquals(byLine(scan(aFile)).first().toBlocking().single().getText(),
                 "log4j.rootLogger=INFO, A1");
 
-    }
-
-    private static class LineToString implements Func1<StringObservable.Line, Observable<String>> {
-
-        @Override
-        public Observable<String> call(final StringObservable.Line line) {
-
-            return just(line.getText());
-        }
     }
 
 }
