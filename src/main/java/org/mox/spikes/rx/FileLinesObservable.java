@@ -9,6 +9,7 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+import static rx.Observable.OnSubscribe;
 import static rx.Observable.create;
 
 /**
@@ -18,7 +19,7 @@ public class FileLinesObservable {
 
     public static Observable<String> scan(final RandomAccessFile aFile) {
 
-        return create(new Observable.OnSubscribe<String>() {
+        return create(new OnSubscribe<String>() {
             @Override
             public void call(final Subscriber<? super String> subscriber) {
 

@@ -49,7 +49,7 @@ public class RxTestCase {
         assertEquals(blockingObservable.single(), valueOf(4));
     }
 
-    private Observable<Integer> length(final Observable<String> stringObservable) {
+    private static Observable<Integer> length(final Observable<String> stringObservable) {
 
         return stringObservable.map(new Func1<String, Integer>() {
 

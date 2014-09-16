@@ -15,6 +15,8 @@ import rx.functions.Func3;
 import java.util.HashMap;
 import java.util.Map;
 
+import static rx.Observable.zip;
+
 /**
  * an example from
  * https://github.com/Netflix/RxJava/wiki/How-To-Use
@@ -66,10 +68,8 @@ public class Service {
                                        .map(new BookmarkToDTO());
 
         final Observable<Map<String, Object>> zippedObservablesAsMap =
-                Observable.zip(bookmarkObservable,
-                               videoMetadataObservable,
-                               userDTOObservable,
-                               new ZipObjectsInMap());
+                zip(bookmarkObservable, videoMetadataObservable, userDTOObservable,
+                        new ZipObjectsInMap());
 
         return zippedObservablesAsMap
                 .map(new MapToVideoDTO(videoId, userId));

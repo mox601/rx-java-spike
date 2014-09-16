@@ -10,6 +10,7 @@ import rx.functions.Func1;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.testng.Assert.assertTrue;
+import static rx.Observable.OnSubscribe;
 import static rx.Observable.create;
 
 /**
@@ -27,7 +28,7 @@ public class Q22284380TestCase {
     @Test
     public void testName() throws Exception {
 
-        final Observable.OnSubscribe<Integer> onSubProduceTwoValues = new Observable.OnSubscribe<Integer>() {
+        final OnSubscribe<Integer> onSubProduceTwoValues = new OnSubscribe<Integer>() {
 
             @Override
             public void call(final Subscriber<? super Integer> subscriber) {
@@ -96,7 +97,7 @@ public class Q22284380TestCase {
 
     private Observable<Integer> doubleIt(final Integer value) {
 
-        return create(new Observable.OnSubscribe<Integer>() {
+        return create(new OnSubscribe<Integer>() {
 
             @Override
             public void call(final Subscriber<? super Integer> subscriber) {

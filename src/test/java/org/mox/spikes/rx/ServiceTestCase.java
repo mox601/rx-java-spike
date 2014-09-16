@@ -76,7 +76,7 @@ public class ServiceTestCase {
 
     }
 
-    private class OnCompleteElapsedTimeLogger implements Action0 {
+    private static class OnCompleteElapsedTimeLogger implements Action0 {
 
         private final long startNsec;
 
@@ -94,7 +94,7 @@ public class ServiceTestCase {
         }
     }
 
-    private class OnErrorThrowableMessageLogger implements Action1<Throwable> {
+    private static class OnErrorThrowableMessageLogger implements Action1<Throwable> {
 
         @Override
         public void call(Throwable throwable) {
@@ -103,7 +103,7 @@ public class ServiceTestCase {
         }
     }
 
-    private class OnNextItemLogger implements Action1<VideoDTO> {
+    private static class OnNextItemLogger implements Action1<VideoDTO> {
 
         @Override
         public void call(VideoDTO videoDTO) {
