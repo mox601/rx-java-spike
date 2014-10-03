@@ -20,7 +20,7 @@
 
         <joda-time.version>2.4</joda-time.version>
         <log4j.version>1.2.17</log4j.version>
-        <rxjava-core.version>1.0.0-rc.3</rxjava-core.version>
+        <rxjava-core.version>1.0.0-rc.4</rxjava-core.version>
         <slf4j-api.version>1.7.7</slf4j-api.version>
         <testng.version>6.8.8</testng.version>
 
@@ -91,6 +91,11 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>17.0</version>
+        </dependency>
         <dependency>
             <groupId>io.reactivex</groupId>
             <artifactId>rxjava</artifactId>
