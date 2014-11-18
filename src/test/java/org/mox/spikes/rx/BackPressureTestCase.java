@@ -18,7 +18,7 @@ public class BackPressureTestCase {
     @Test
     public void testName() throws Exception {
 
-        final Subscription subscribe = just(1, 2, 3, 4).subscribe(new Subscriber<Integer>() {
+        final Subscription subscription = just(1, 2, 3, 4).subscribe(new Subscriber<Integer>() {
 
             @Override
             public void onStart() {
@@ -42,6 +42,13 @@ public class BackPressureTestCase {
             public void onNext(Integer integer) {
 
                 System.out.println(integer);
+
+                try {
+                    LOGGER.info("sleeping");
+                    Thread.sleep(1L);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
                 request(1);
             }
