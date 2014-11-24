@@ -19,6 +19,7 @@ public class FileLinesObservable {
 
     public static Observable<String> scan(final RandomAccessFile aFile) {
 
+        //TODO refine threading
         return create(new OnSubscribe<String>() {
             @Override
             public void call(final Subscriber<? super String> subscriber) {
