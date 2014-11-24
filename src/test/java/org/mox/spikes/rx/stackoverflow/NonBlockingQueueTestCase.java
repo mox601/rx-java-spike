@@ -16,6 +16,13 @@ public class NonBlockingQueueTestCase {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NonBlockingQueueTestCase.class);
 
+    /* TODO
+    * return Observable<File>s from recursively scan a folder and all its subdirectories
+    * e.g.:
+    * new X("/path/to/data/*.json", false) //stops at data folder
+    * new X("/path/to/data/*.json", true) //recurs for all data/ subdirectories
+    * */
+
     @Test
     public void testName() throws Exception {
 

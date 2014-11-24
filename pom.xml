@@ -55,7 +55,7 @@
             </dependency>
             <dependency>
                 <groupId>io.reactivex</groupId>
-                <artifactId>rx-netty</artifactId>
+                <artifactId>rxnetty</artifactId>
                 <version>${rx-netty.version}</version>
             </dependency>
             <dependency>
@@ -102,15 +102,15 @@
             <artifactId>rxjava</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.netflix.rxjava</groupId>
-            <artifactId>rxjava-apache-http</artifactId>
+            <groupId>io.reactivex</groupId>
+            <artifactId>rxapache-http</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.netflix.rxnetty</groupId>
-            <artifactId>rx-netty</artifactId>
+            <groupId>io.reactivex</groupId>
+            <artifactId>rxnetty</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.netflix.rxjava</groupId>
+            <groupId>io.reactivex</groupId>
             <artifactId>rxjava-string</artifactId>
         </dependency>
         <dependency>
