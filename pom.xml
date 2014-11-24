@@ -25,8 +25,9 @@
         <testng.version>6.8.8</testng.version>
 
         <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
-        <rx-netty.version>0.3.14</rx-netty.version>
+        <rxjava-deps>0.21.0</rxjava-deps>
         <rxjava-string.version>0.20.5</rxjava-string.version>
+        <rx-netty.version>0.4.0</rx-netty.version>
         <numerus.version>1.1</numerus.version>
     </properties>
 
@@ -38,22 +39,22 @@
                 <version>${rxjava-core.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.netflix.rxjava</groupId>
+                <groupId>io.reactivex</groupId>
                 <artifactId>rxjava-math</artifactId>
-                <version>${rxjava-string.version}</version>
+                <version>${rxjava-deps}</version>
             </dependency>
             <dependency>
-                <groupId>com.netflix.rxjava</groupId>
-                <artifactId>rxjava-apache-http</artifactId>
-                <version>${rxjava-string.version}</version>
+                <groupId>io.reactivex</groupId>
+                <artifactId>rxapache-http</artifactId>
+                <version>${rxjava-deps}</version>
             </dependency>
             <dependency>
-                <groupId>com.netflix.rxjava</groupId>
+                <groupId>io.reactivex</groupId>
                 <artifactId>rxjava-string</artifactId>
-                <version>${rxjava-string.version}</version>
+                <version>${rxjava-deps}</version>
             </dependency>
             <dependency>
-                <groupId>com.netflix.rxnetty</groupId>
+                <groupId>io.reactivex</groupId>
                 <artifactId>rx-netty</artifactId>
                 <version>${rx-netty.version}</version>
             </dependency>
