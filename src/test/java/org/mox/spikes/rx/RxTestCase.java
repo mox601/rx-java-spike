@@ -11,9 +11,7 @@ import rx.observables.BlockingObservable;
 import rx.observables.StringObservable;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,7 +19,7 @@ import java.nio.file.Paths;
 import java.util.Iterator;
 
 import static java.lang.Integer.valueOf;
-import static org.mox.spikes.rx.FileLinesObservable.scan;
+import static org.mox.spikes.rx.FileObservable.stream;
 import static org.testng.Assert.assertEquals;
 import static rx.Observable.just;
 import static rx.observables.StringObservable.byLine;
@@ -56,9 +54,8 @@ public class RxTestCase {
     @Test
     public void shouldCalculateLength() throws Exception {
 
-        final Observable<String> aName = just("this");
-        final Observable<Integer> length = length(aName);
-        final BlockingObservable<Integer> blockingObservable = length.toBlocking();
+        final Observable<Integer> aLength = length(just("this"));
+        final BlockingObservable<Integer> blockingObservable = aLength.toBlocking();
         assertEquals(blockingObservable.single(), valueOf(4));
     }
 
@@ -68,57 +65,14 @@ public class RxTestCase {
         final String aDirectory = "src/test/resources";
 
         //TODO refine threading
-        final Observable<StringObservable.Line> linesObservable = Observable.create(
-                new Observable.OnSubscribe<File>() {
+        final Observable<StringObservable.Line> linesObservable = FilesObservable.ls(aDirectory)
+                .flatMap(new Func1<File, Observable<StringObservable.Line>>() {
                     @Override
-                    public void call(Subscriber<? super File> subscriber) {
+                    public Observable<StringObservable.Line> call(final File file) {
 
-                        final Path dir = Paths.get(aDirectory);
-
-                        DirectoryStream<Path> directoryStream = null;
-
-                        try {
-                            directoryStream = Files.newDirectoryStream(dir);
-
-                            for (Path next : directoryStream) {
-                                LOGGER.info(next.toAbsolutePath().toString());
-
-                                if (!subscriber.isUnsubscribed()) {
-                                    subscriber.onNext(next.toFile());
-                                }
-                            }
-
-                        } catch (IOException e) {
-                            subscriber.onError(e);
-                        } finally {
-                            if (directoryStream != null) {
-                                try {
-                                    directoryStream.close();
-                                } catch (IOException e) {
-                                    //NOP
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                        subscriber.onCompleted();
+                        return byLine(stream(file));
                     }
-
-                }).flatMap(new Func1<File, Observable<StringObservable.Line>>() {
-            @Override
-            public Observable<StringObservable.Line> call(final File file) {
-
-                LOGGER.info("file: " + file.toString());
-
-                RandomAccessFile raf = null;
-                try {
-                    raf = new RandomAccessFile(file, "r");
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-
-                return byLine(scan(raf));
-            }
-        });
+                });
         linesObservable.subscribe(new Action1<StringObservable.Line>() {
             @Override
             public void call(StringObservable.Line s) {
@@ -144,4 +98,45 @@ public class RxTestCase {
 
     }
 
+    private static class FilesObservable {
+
+        public static Observable<File> ls(final String aDirectory) {
+
+            return Observable.create(new Observable.OnSubscribe<File>() {
+                @Override
+                public void call(final Subscriber<? super File> subscriber) {
+
+                    final Path dir = Paths.get(aDirectory);
+
+                    DirectoryStream<Path> directoryStream = null;
+
+                    try {
+                        directoryStream = Files.newDirectoryStream(dir);
+
+                        final Iterator<Path> it = directoryStream.iterator();
+
+                        while (it.hasNext() && !subscriber.isUnsubscribed()) {
+                            final Path next = it.next();
+                            subscriber.onNext(next.toFile());
+                        }
+
+                    } catch (IOException e) {
+                        subscriber.onError(e);
+                    } finally {
+                        if (directoryStream != null) {
+                            try {
+                                directoryStream.close();
+                            } catch (IOException e) {
+                                //NOP
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                    subscriber.onCompleted();
+
+                }
+
+            });
+        }
+    }
 }

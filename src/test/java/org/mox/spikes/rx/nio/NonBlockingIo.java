@@ -2,11 +2,12 @@ package org.mox.spikes.rx.nio;
 
 import org.testng.annotations.Test;
 
+import java.io.File;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-import static org.mox.spikes.rx.FileLinesObservable.scan;
+import static org.mox.spikes.rx.FileObservable.stream;
 import static org.testng.Assert.assertEquals;
 import static rx.observables.StringObservable.byLine;
 
@@ -57,9 +58,8 @@ public class NonBlockingIo {
     @Test
     public void testCase() throws Exception {
 
-        final RandomAccessFile aFile = new RandomAccessFile("src/test/resources/log4j.properties",
-                "r");
-        assertEquals(byLine(scan(aFile)).first().toBlocking().single().getText(),
+        final File aFile = new File("src/test/resources/log4j.properties", "r");
+        assertEquals(byLine(stream(aFile)).first().toBlocking().single().getText(),
                 "log4j.rootLogger=INFO, A1");
 
     }
