@@ -4,18 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 import rx.Observable;
-import rx.Subscriber;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.observables.BlockingObservable;
 import rx.observables.StringObservable;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Iterator;
 
 import static java.lang.Integer.valueOf;
@@ -65,8 +59,14 @@ public class RxTestCase {
         final String aDirectory = "src/test/resources";
 
         //TODO refine threading
-        final Observable<StringObservable.Line> linesObservable = FilesObservable.ls(aDirectory)
-                .flatMap(new Func1<File, Observable<StringObservable.Line>>() {
+        final Observable<StringObservable.Line> linesObservable = FileObservable.ls(aDirectory)
+                .filter(new Func1<File, Boolean>() {
+                    @Override
+                    public Boolean call(File file) {
+
+                        return file.isFile();
+                    }
+                }).flatMap(new Func1<File, Observable<StringObservable.Line>>() {
                     @Override
                     public Observable<StringObservable.Line> call(final File file) {
 
@@ -96,47 +96,5 @@ public class RxTestCase {
             }
         });
 
-    }
-
-    private static class FilesObservable {
-
-        public static Observable<File> ls(final String aDirectory) {
-
-            return Observable.create(new Observable.OnSubscribe<File>() {
-                @Override
-                public void call(final Subscriber<? super File> subscriber) {
-
-                    final Path dir = Paths.get(aDirectory);
-
-                    DirectoryStream<Path> directoryStream = null;
-
-                    try {
-                        directoryStream = Files.newDirectoryStream(dir);
-
-                        final Iterator<Path> it = directoryStream.iterator();
-
-                        while (it.hasNext() && !subscriber.isUnsubscribed()) {
-                            final Path next = it.next();
-                            subscriber.onNext(next.toFile());
-                        }
-
-                    } catch (IOException e) {
-                        subscriber.onError(e);
-                    } finally {
-                        if (directoryStream != null) {
-                            try {
-                                directoryStream.close();
-                            } catch (IOException e) {
-                                //NOP
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                    subscriber.onCompleted();
-
-                }
-
-            });
-        }
     }
 }

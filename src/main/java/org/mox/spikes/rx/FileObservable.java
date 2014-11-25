@@ -9,6 +9,11 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Iterator;
 
 import static rx.Observable.OnSubscribe;
 import static rx.Observable.create;
@@ -98,5 +103,45 @@ public class FileObservable {
             }
         });
 
+    }
+
+    /* stream all files in a directory */
+    public static Observable<File> ls(final String aDirectory) {
+
+        return Observable.create(new OnSubscribe<File>() {
+            @Override
+            public void call(final Subscriber<? super File> subscriber) {
+
+                final Path dir = Paths.get(aDirectory);
+
+                DirectoryStream<Path> directoryStream = null;
+
+                try {
+                    directoryStream = Files.newDirectoryStream(dir);
+
+                    final Iterator<Path> it = directoryStream.iterator();
+
+                    while (it.hasNext() && !subscriber.isUnsubscribed()) {
+                        final File t = it.next().toFile();
+                        subscriber.onNext(t);
+                    }
+
+                } catch (IOException e) {
+                    subscriber.onError(e);
+                } finally {
+                    if (directoryStream != null) {
+                        try {
+                            directoryStream.close();
+                        } catch (IOException e) {
+                            //NOP
+                            e.printStackTrace();
+                        }
+                    }
+                }
+                subscriber.onCompleted();
+
+            }
+
+        });
     }
 }
