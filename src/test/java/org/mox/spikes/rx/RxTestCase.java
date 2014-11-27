@@ -9,10 +9,11 @@ import rx.functions.Func1;
 import rx.observables.BlockingObservable;
 import rx.observables.StringObservable;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.Iterator;
 
 import static java.lang.Integer.valueOf;
+import static org.mox.spikes.rx.FileObservable.create;
 import static org.mox.spikes.rx.FileObservable.stream;
 import static org.testng.Assert.assertEquals;
 import static rx.Observable.just;
@@ -60,17 +61,17 @@ public class RxTestCase {
 
         //TODO refine threading
         final Observable<StringObservable.Line> linesObservable = FileObservable.ls(aDirectory)
-                .filter(new Func1<File, Boolean>() {
+                .filter(new Func1<Path, Boolean>() {
                     @Override
-                    public Boolean call(File file) {
+                    public Boolean call(final Path path) {
 
-                        return file.isFile();
+                        return path.toFile().isFile();
                     }
-                }).flatMap(new Func1<File, Observable<StringObservable.Line>>() {
+                }).flatMap(new Func1<Path, Observable<StringObservable.Line>>() {
                     @Override
-                    public Observable<StringObservable.Line> call(final File file) {
+                    public Observable<StringObservable.Line> call(final Path path) {
 
-                        return byLine(stream(file));
+                        return byLine(stream(create(path.toFile()), 8));
                     }
                 });
         linesObservable.subscribe(new Action1<StringObservable.Line>() {

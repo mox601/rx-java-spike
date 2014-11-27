@@ -7,6 +7,7 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+import static org.mox.spikes.rx.FileObservable.create;
 import static org.mox.spikes.rx.FileObservable.stream;
 import static org.testng.Assert.assertEquals;
 import static rx.observables.StringObservable.byLine;
@@ -59,7 +60,7 @@ public class NonBlockingIo {
     public void testCase() throws Exception {
 
         final File aFile = new File("src/test/resources/log4j.properties", "r");
-        assertEquals(byLine(stream(aFile)).first().toBlocking().single().getText(),
+        assertEquals(byLine(stream(create(aFile), 8)).first().toBlocking().single().getText(),
                 "log4j.rootLogger=INFO, A1");
 
     }

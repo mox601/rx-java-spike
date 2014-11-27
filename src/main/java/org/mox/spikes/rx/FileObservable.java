@@ -2,6 +2,7 @@ package org.mox.spikes.rx;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.functions.Func1;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,23 +17,34 @@ import java.nio.file.Paths;
 import java.util.Iterator;
 
 import static rx.Observable.OnSubscribe;
-import static rx.Observable.create;
 
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
  */
 public class FileObservable {
 
-    public static Observable<String> stream(final File aFile) {
+    public static Observable<File> create(final File aFile) {
 
         //TODO refine threading
-        return create(new OnSubscribe<String>() {
+        return Observable.create(new OnSubscribe<File>() {
             @Override
-            public void call(final Subscriber<? super String> subscriber) {
+            public void call(Subscriber<? super File> subscriber) {
 
-                final Thread thread = new Thread(new Runnable() {
+                subscriber.onNext(aFile);
+            }
+        });
+    }
+
+    public static Observable<String> stream(final Observable<File> aFileObservable,
+            final int bufferSize) {
+
+        return aFileObservable.flatMap(new Func1<File, Observable<String>>() {
+            @Override
+            public Observable<String> call(final File aFile) {
+
+                return Observable.create(new OnSubscribe<String>() {
                     @Override
-                    public void run() {
+                    public void call(Subscriber<? super String> subscriber) {
 
                         RandomAccessFile raf = null;
                         try {
@@ -44,7 +56,7 @@ public class FileObservable {
                         if (raf != null) {
                             final FileChannel inChannel = raf.getChannel();
 
-                            final ByteBuffer buf = ByteBuffer.allocate(8);
+                            final ByteBuffer buf = ByteBuffer.allocate(bufferSize);
 
                             try {
 
@@ -98,19 +110,18 @@ public class FileObservable {
 
                     }
                 });
-
-                thread.start();
             }
         });
 
     }
 
+    //TODO could be a Path observable
     /* stream all files in a directory */
-    public static Observable<File> ls(final String aDirectory) {
+    public static Observable<Path> ls(final String aDirectory) {
 
-        return Observable.create(new OnSubscribe<File>() {
+        return Observable.create(new OnSubscribe<Path>() {
             @Override
-            public void call(final Subscriber<? super File> subscriber) {
+            public void call(final Subscriber<? super Path> subscriber) {
 
                 final Path dir = Paths.get(aDirectory);
 
@@ -122,8 +133,8 @@ public class FileObservable {
                     final Iterator<Path> it = directoryStream.iterator();
 
                     while (it.hasNext() && !subscriber.isUnsubscribed()) {
-                        final File t = it.next().toFile();
-                        subscriber.onNext(t);
+                        final Path p = it.next();
+                        subscriber.onNext(p);
                     }
 
                 } catch (IOException e) {
@@ -139,7 +150,6 @@ public class FileObservable {
                     }
                 }
                 subscriber.onCompleted();
-
             }
 
         });
