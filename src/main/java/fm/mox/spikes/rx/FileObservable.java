@@ -10,11 +10,12 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.file.DirectoryStream;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Iterator;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 
 import static rx.Observable.OnSubscribe;
 
@@ -90,14 +91,12 @@ public class FileObservable {
 
                                 }
 
-                                //TODO does the order count?
                                 try {
                                     raf.close();
+                                    subscriber.onCompleted();
                                 } catch (IOException e) {
-                                    //nop
+                                    subscriber.onError(e);
                                 }
-                                subscriber.onCompleted();
-
                             } catch (FileNotFoundException e) {
                                 subscriber.onError(e);
                             } catch (IOException e) {
@@ -119,36 +118,26 @@ public class FileObservable {
     /* stream all files in a directory */
     public static Observable<Path> ls(final String aDirectory) {
 
-        return Observable.create(new OnSubscribe<Path>() {
+        return Observable.create(new Observable.OnSubscribe<Path>() {
             @Override
             public void call(final Subscriber<? super Path> subscriber) {
 
-                final Path dir = Paths.get(aDirectory);
-
-                DirectoryStream<Path> directoryStream = null;
-
+                final Path startPath = Paths.get(aDirectory);
                 try {
-                    directoryStream = Files.newDirectoryStream(dir);
+                    Files.walkFileTree(startPath, new SimpleFileVisitor<Path>() {
 
-                    final Iterator<Path> it = directoryStream.iterator();
+                        @Override
+                        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+                                throws IOException {
 
-                    while (it.hasNext() && !subscriber.isUnsubscribed()) {
-                        final Path p = it.next();
-                        subscriber.onNext(p);
-                    }
-
+                            subscriber.onNext(file);
+                            return FileVisitResult.CONTINUE;
+                        }
+                    });
                 } catch (IOException e) {
                     subscriber.onError(e);
-                } finally {
-                    if (directoryStream != null) {
-                        try {
-                            directoryStream.close();
-                        } catch (IOException e) {
-                            //NOP
-                            e.printStackTrace();
-                        }
-                    }
                 }
+
                 subscriber.onCompleted();
             }
 
