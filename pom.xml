@@ -18,21 +18,28 @@
         <javac.src.version>1.6</javac.src.version>
         <javac.target.version>1.6</javac.target.version>
 
+        <easymock.version>3.2</easymock.version>
+        <guava.version>18.0</guava.version>
         <joda-time.version>2.4</joda-time.version>
         <log4j.version>1.2.17</log4j.version>
-        <rxjava-core.version>1.0.3</rxjava-core.version>
+        <numerus.version>1.1</numerus.version>
+        <rx-netty.version>0.4.0</rx-netty.version>
+        <rxjava-core.version>1.0.6</rxjava-core.version>
+        <rxjava-deps>0.21.0</rxjava-deps>
+        <rxjava-string.version>0.20.7</rxjava-string.version>
         <slf4j-api.version>1.7.7</slf4j-api.version>
         <testng.version>6.8.8</testng.version>
 
         <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
-        <rxjava-deps>0.21.0</rxjava-deps>
-        <rxjava-string.version>0.20.7</rxjava-string.version>
-        <rx-netty.version>0.4.0</rx-netty.version>
-        <numerus.version>1.1</numerus.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
             <dependency>
                 <groupId>io.reactivex</groupId>
                 <artifactId>rxjava</artifactId>
@@ -88,6 +95,11 @@
                 <artifactId>testng</artifactId>
                 <version>${testng.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymock</artifactId>
+                <version>${easymock.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -95,7 +107,6 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>17.0</version>
         </dependency>
         <dependency>
             <groupId>io.reactivex</groupId>
@@ -160,6 +171,11 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

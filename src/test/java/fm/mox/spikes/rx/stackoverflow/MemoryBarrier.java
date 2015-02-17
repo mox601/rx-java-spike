@@ -13,17 +13,19 @@ public class MemoryBarrier {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MemoryBarrier.class);
 
-    static int counter = 0;
-    static final int MAX = 1000;
-    static volatile int memoryBarrier;
+    private static int counter = 0;
 
-    static class Reader extends Thread {
+    private static final int MAX = 1000;
+
+    private static volatile int memoryBarrier;
+
+    private static class Reader extends Thread {
 
         @Override
         public void run() {
 
             while (counter < MAX) {
-                //                int dummy = memoryBarrier;
+//                int dummy = memoryBarrier;
             }
 
             System.out.println("thread " + getId() + " done!");

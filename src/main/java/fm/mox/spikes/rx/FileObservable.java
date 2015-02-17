@@ -29,7 +29,7 @@ public class FileObservable {
         //TODO refine threading
         return Observable.create(new OnSubscribe<File>() {
             @Override
-            public void call(Subscriber<? super File> subscriber) {
+            public void call(final Subscriber<? super File> subscriber) {
 
                 subscriber.onNext(aFile);
             }
@@ -114,7 +114,6 @@ public class FileObservable {
 
     }
 
-    //TODO could be a Path observable
     /* stream all files in a directory */
     public static Observable<Path> ls(final String aDirectory) {
 

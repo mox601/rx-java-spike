@@ -12,9 +12,9 @@ import rx.observables.StringObservable;
 import java.nio.file.Path;
 import java.util.Iterator;
 
-import static java.lang.Integer.valueOf;
 import static fm.mox.spikes.rx.FileObservable.create;
 import static fm.mox.spikes.rx.FileObservable.stream;
+import static java.lang.Integer.valueOf;
 import static org.testng.Assert.assertEquals;
 import static rx.Observable.just;
 import static rx.observables.StringObservable.byLine;
@@ -92,6 +92,8 @@ public class RxTestCase {
 
             @Override
             public Integer call(final String s) {
+
+                LOGGER.info("" + s);
 
                 return s.length();
             }

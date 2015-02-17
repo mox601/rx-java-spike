@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static java.util.Arrays.asList;
 import static rx.Observable.from;
-import static rx.schedulers.Schedulers.io;
+import static rx.schedulers.Schedulers.computation;
 
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
@@ -35,7 +35,7 @@ public class InfiniteStreamTestCase {
     public void shouldConsumeRepeatingStream() throws Exception {
 
         final List<String> aList = asList("1", "2");
-        final Observable<String> repeat = from(aList).repeat(io());
+        final Observable<String> repeat = from(aList).repeat(computation());
 
         final Counter counter = new Counter(this.counter);
         final Subscription aSubscription = repeat.subscribe(counter);
@@ -61,6 +61,7 @@ public class InfiniteStreamTestCase {
         public void call(final String s) {
 
             this.counter.incrementAndGet();
+            //            LOGGER.info("");
         }
     }
 }
