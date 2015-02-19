@@ -22,8 +22,8 @@ public class ObservablesThreadingTestCase {
     public void testName() throws Exception {
 
         //functions
-        final Func1<Long, Long> oneAdder = new FastAdder(1);
-        final Func1<Long, Long> doubler = new SlowMultiplier(2);
+        final Func1<Long, Long> oneAdder = new FastOp();
+        final Func1<Long, Long> doubler = new SlowOp();
 
         //aSource works on Schedulers.computation()
         final Observable<Long> aSource = Observable.just(1L, 2L, 3L, 4L, 5L).doOnNext(
@@ -33,7 +33,7 @@ public class ObservablesThreadingTestCase {
 
                         LOGGER.info("tick: " + aLong);
                     }
-                }).subscribeOn(Schedulers.computation());
+                });
 
         //still computation()
         final Observable<Long> plusOne = aSource.map(oneAdder);
@@ -59,23 +59,38 @@ public class ObservablesThreadingTestCase {
 
                 LOGGER.info("consumed " + aLong);
 
-
             }
 
         });
 
+        //runs on computation()
+        final Observable<Long> afterLogging = doublePlusOneTick.observeOn(Schedulers.computation())
+                .map(new Func1<Long, Long>() {
+                    @Override
+                    public Long call(Long aLong) {
+
+                        LOGGER.info("on computation " + aLong);
+                        return aLong;
+                    }
+                });
+
+        //runs on computation()
+        final Subscription anotherSubscription = afterLogging.subscribe(new Action1<Long>() {
+            @Override
+            public void call(Long aLong) {
+
+                LOGGER.info("on computation " + aLong);
+            }
+        });
+
         Thread.sleep(10000L);
+
+        aSubscription.unsubscribe();
+        anotherSubscription.unsubscribe();
 
     }
 
-    private static class SlowMultiplier implements Func1<Long, Long> {
-
-        private final int factor;
-
-        public SlowMultiplier(final int factor) {
-
-            this.factor = factor;
-        }
+    private static class SlowOp implements Func1<Long, Long> {
 
         @Override
         public Long call(final Long aLong) {
@@ -86,29 +101,19 @@ public class ObservablesThreadingTestCase {
                 //nop
             }
 
-            //could overflow
-            final long result = aLong * factor;
-            LOGGER.info("multiplied: " + result);
-            return result;
+            LOGGER.info("slow: " + aLong);
+            return aLong;
         }
 
     }
 
-    private static class FastAdder implements Func1<Long, Long> {
-
-        private final int increment;
-
-        public FastAdder(final int increment) {
-
-            this.increment = increment;
-        }
+    private static class FastOp implements Func1<Long, Long> {
 
         @Override
         public Long call(final Long item) {
 
-            final long result = item + increment;
-            LOGGER.info("added: " + result);
-            return result;
+            LOGGER.info("fast: " + item);
+            return item;
         }
     }
 }
