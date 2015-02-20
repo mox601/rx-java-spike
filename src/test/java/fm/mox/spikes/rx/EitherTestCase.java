@@ -18,9 +18,8 @@ public class EitherTestCase {
     @Test
     public void testName() throws Exception {
 
-        Either<RuntimeException, Integer> a = doThis(2);
-        Either<RuntimeException, Integer> b = doThis(1);
-
+        final Either<RuntimeException, Integer> a = doThis(2);
+        final Either<RuntimeException, Integer> b = doThis(1);
         assertEquals(1, (long) a.right().value());
         assertEquals("", b.left().value().getMessage());
 
@@ -31,23 +30,23 @@ public class EitherTestCase {
     @Test
     public void catching_other_people_exceptions() {
 
-        Either<Exception, Integer> result = divide(4, 2);
+        final Either<Exception, Integer> result = divide(4, 2);
+        final Either<Exception, Integer> failure = divide(4, 0);
         assertEquals((long) 2, (long) result.right().value());
-        Either<Exception, Integer> failure = divide(4, 0);
         assertEquals("/ by zero", failure.left().value().getMessage());
     }
 
     @Test
     public void option_test_success() {
 
-        Option result = divide(4.0, 2);
+        final Option result = divide(4.0, 2);
         assertEquals(2.0, (Double) result.some(), 0.1);
     }
 
     @Test
     public void option_test_failure() {
 
-        Option result = divide(4.0, 0);
+        final Option result = divide(4.0, 0);
         assertEquals(Option.none(), result);
 
     }
