@@ -15,8 +15,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
-        <javac.src.version>1.6</javac.src.version>
-        <javac.target.version>1.6</javac.target.version>
+        <javac.src.version>1.7</javac.src.version>
+        <javac.target.version>1.7</javac.target.version>
 
         <easymock.version>3.2</easymock.version>
         <guava.version>18.0</guava.version>
@@ -24,7 +24,7 @@
         <log4j.version>1.2.17</log4j.version>
         <numerus.version>1.1</numerus.version>
         <rx-netty.version>0.4.0</rx-netty.version>
-        <rxjava-core.version>1.0.6</rxjava-core.version>
+        <rxjava-core.version>1.0.7</rxjava-core.version>
         <rxjava-deps>0.21.0</rxjava-deps>
         <rxjava-string.version>0.20.7</rxjava-string.version>
         <slf4j-api.version>1.7.7</slf4j-api.version>
@@ -32,6 +32,13 @@
 
         <maven-compiler-plugin.version>3.1</maven-compiler-plugin.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>atlassian-public</id>
+            <url>https://maven.atlassian.com/content/groups/public/</url>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -104,6 +111,11 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-core</artifactId>
+            <version>2.0.0.RC1</version>
+        </dependency>
         <dependency>
             <groupId>org.functionaljava</groupId>
             <artifactId>functionaljava</artifactId>
