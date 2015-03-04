@@ -93,7 +93,7 @@ public class ThreadPoolTestCase {
         }
     }
 
-    private class AnExecutorService implements ExecutorService {
+    private static class AnExecutorService implements ExecutorService {
 
         @Override
         public void shutdown() {

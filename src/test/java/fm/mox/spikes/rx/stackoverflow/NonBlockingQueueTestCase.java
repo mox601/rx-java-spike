@@ -20,7 +20,7 @@ public class NonBlockingQueueTestCase {
     public void testName() throws Exception {
 
         //TODO use arrayblockingueue and compare latencies , since contention here is high
-        final ConcurrentLinkedQueue<Long> longLinkedQueue = new ConcurrentLinkedQueue<Long>();
+        final ConcurrentLinkedQueue<Long> longLinkedQueue = new ConcurrentLinkedQueue<>();
 
         final Producer producer = new Producer(longLinkedQueue);
 
@@ -38,7 +38,7 @@ public class NonBlockingQueueTestCase {
 
     }
 
-    private class Producer implements Runnable {
+    private static class Producer implements Runnable {
 
         private final Queue<Long> longLinkedQueue;
 
