@@ -5,12 +5,17 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 import rx.Observable;
 import rx.functions.Action1;
+import rx.functions.Action2;
+import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.observables.BlockingObservable;
 import rx.observables.StringObservable;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import static fm.mox.spikes.rx.FileObservable.create;
 import static fm.mox.spikes.rx.FileObservable.stream;
@@ -84,6 +89,66 @@ public class RxTestCase {
 
         Thread.sleep(1000L);
 
+    }
+
+    public List<String> query(String q, int request) {
+
+        return Arrays.asList("a", "b");
+    }
+
+    public Observable<String> queryObservable(final String q, final int request) {
+
+        return Observable.just(q).map(new Func1<String, List<String>>() {
+            @Override
+            public List<String> call(String str) {
+
+                return query(str, request);
+            }
+        }).filter(new Func1<List<String>, Boolean>() {
+            @Override
+            public Boolean call(List<String> item) {
+
+                return true;
+            }
+        }) // Remove some stale items
+                .collect(new Func0<List<String>>() {
+                    @Override
+                    public List<String> call() {
+
+                        return new ArrayList<String>();
+                    }
+                }, new Action2<List<String>, List<String>>() {
+                    @Override
+                    public void call(List<String> l, List<String> item) {
+
+                        l.addAll(item);
+                    }
+                }).flatMap(new Func1<List<String>, Observable<String>>() {
+                    @Override
+                    public Observable<String> call(List<String> results) {
+
+                        if (results.size() < request) {
+                            return Observable
+                                    .from(results)
+                                    .concatWith(queryObservable(q, request - results.size()));
+                        } else {
+                            return Observable.from(results);
+                        }
+                    }
+                }).take(request);
+    }
+
+    /* example by Shixiong Zhu <zsxwing@gmail.com> 26/3/205 7:58 AM (2 hours ago) to Todd, rxjava */
+    @Test
+    public void foo() {
+
+        queryObservable("foo", 20).subscribe(new Action1<String>() {
+            @Override
+            public void call(String x) {
+
+                LOGGER.info("" + x);
+            }
+        });
     }
 
     private static Observable<Integer> length(final Observable<String> stringObservable) {
