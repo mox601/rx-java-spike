@@ -115,7 +115,7 @@ public class RxTestCase {
                     @Override
                     public List<String> call() {
 
-                        return new ArrayList<String>();
+                        return new ArrayList<>();
                     }
                 }, new Action2<List<String>, List<String>>() {
                     @Override
@@ -139,6 +139,7 @@ public class RxTestCase {
     }
 
     /* example by Shixiong Zhu <zsxwing@gmail.com> 26/3/205 7:58 AM (2 hours ago) to Todd, rxjava */
+    //TODO can be similar to a pagination?
     @Test
     public void foo() {
 
