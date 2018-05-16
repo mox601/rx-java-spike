@@ -15,8 +15,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
-        <javac.src.version>1.7</javac.src.version>
-        <javac.target.version>1.7</javac.target.version>
+        <javac.src.version>1.8</javac.src.version>
+        <javac.target.version>1.8</javac.target.version>
 
         <easymock.version>3.2</easymock.version>
         <guava.version>18.0</guava.version>
@@ -95,6 +95,11 @@
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
                 <version>${joda-time.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.16.18</version>
             </dependency>
             <dependency>
                 <groupId>org.testng</groupId>
