@@ -33,7 +33,7 @@ public class AppTestCase {
         final BlockingQueue<List<String>> filledBuffers = new ArrayBlockingQueue<List<String>>(
                 buffersAvailable);
 
-        emptyBuffers.put(new ArrayList<String>());
+        emptyBuffers.put(new ArrayList<>());
 
         final BufferProvider<List<String>> bufferProvider = new BufferProvider<List<String>>(
                 emptyBuffers, filledBuffers);

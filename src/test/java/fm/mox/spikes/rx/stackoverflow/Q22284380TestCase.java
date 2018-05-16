@@ -1,17 +1,18 @@
 package fm.mox.spikes.rx.stackoverflow;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testng.annotations.Test;
-import rx.Observable;
-import rx.Subscriber;
-import rx.functions.Func1;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import static org.testng.Assert.assertTrue;
 import static rx.Observable.OnSubscribe;
 import static rx.Observable.create;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testng.annotations.Test;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.functions.Func1;
 
 /**
  * http://stackoverflow.com/questions/22284380/composing-async-observables-that-have-dependencies-using-rxjava
@@ -20,52 +21,39 @@ import static rx.Observable.create;
  */
 public class Q22284380TestCase {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(
-            Q22284380TestCase.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Q22284380TestCase.class);
 
     private AtomicBoolean completed = new AtomicBoolean(false);
 
     @Test
     public void testName() throws Exception {
 
-        final OnSubscribe<Integer> onSubProduceTwoValues = new OnSubscribe<Integer>() {
+        final OnSubscribe<Integer> onSubProduceTwoValues = subscriber -> {
 
-            @Override
-            public void call(final Subscriber<? super Integer> subscriber) {
+            final Thread thread = new Thread(new Runnable() {
 
-                final Thread thread = new Thread(new Runnable() {
+                public Integer i = 0;
 
-                    public Integer i = 0;
+                @Override
+                public void run() {
 
-                    @Override
-                    public void run() {
-
-                        final Integer max = 2;
-                        while (i < max) {
-                            subscriber.onNext(i);
-                            i++;
-                        }
-
-                        subscriber.onCompleted();
+                    final Integer max = 2;
+                    while (i < max) {
+                        subscriber.onNext(i);
+                        i++;
                     }
-                });
 
-                thread.start();
-            }
+                    subscriber.onCompleted();
+                }
+            });
+
+            thread.start();
         };
 
         final Observable<Integer> values = create(onSubProduceTwoValues);
 
         final Observable<Integer> byTwoMultiplier = values
-                .flatMap(new Func1<Integer, Observable<Integer>>() {
-
-                    @Override
-                    public Observable<Integer> call(Integer aValue) {
-
-                        return doubleIt(aValue);
-
-                    }
-                });
+                .flatMap((Func1<Integer, Observable<Integer>>) this::doubleIt);
 
         byTwoMultiplier.subscribe(new Subscriber<Integer>() {
 
@@ -97,28 +85,20 @@ public class Q22284380TestCase {
 
     private Observable<Integer> doubleIt(final Integer value) {
 
-        return create(new OnSubscribe<Integer>() {
+        return create(subscriber -> {
 
-            @Override
-            public void call(final Subscriber<? super Integer> subscriber) {
+            final Thread thread = new Thread(() -> {
 
-                final Thread thread = new Thread(new Runnable() {
+                try {
+                    subscriber.onNext(value * 2);
+                    subscriber.onCompleted();
+                } catch (Throwable e) {
+                    subscriber.onError(e);
+                }
+            });
 
-                    @Override
-                    public void run() {
+            thread.start();
 
-                        try {
-                            subscriber.onNext(value * 2);
-                            subscriber.onCompleted();
-                        } catch (Throwable e) {
-                            subscriber.onError(e);
-                        }
-                    }
-                });
-
-                thread.start();
-
-            }
         });
     }
 }

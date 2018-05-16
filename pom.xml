@@ -67,16 +67,6 @@
                 <version>${rxjava-deps}</version>
             </dependency>
             <dependency>
-                <groupId>io.reactivex</groupId>
-                <artifactId>rxnetty</artifactId>
-                <version>${rx-netty.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.netflix.numerus</groupId>
-                <artifactId>numerus</artifactId>
-                <version>${numerus.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>${log4j.version}</version>
@@ -116,26 +106,12 @@
 
     <dependencies>
         <dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-core</artifactId>
-            <version>2.0.0.RC1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
         <dependency>
             <groupId>io.reactivex</groupId>
             <artifactId>rxjava</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.reactivex</groupId>
-            <artifactId>rxapache-http</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.reactivex</groupId>
-            <artifactId>rxnetty</artifactId>
         </dependency>
         <dependency>
             <groupId>io.reactivex</groupId>

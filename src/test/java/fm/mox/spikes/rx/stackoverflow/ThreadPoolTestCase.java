@@ -1,23 +1,16 @@
 package fm.mox.spikes.rx.stackoverflow;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
@@ -37,17 +30,13 @@ public class ThreadPoolTestCase {
         final ExecutorService executorService = Executors.newFixedThreadPool(2,
                 aNamedThreadFactory);
 
-        final Runnable aRunnable = new Runnable() {
-            @Override
-            public void run() {
+        final Runnable aRunnable = () -> {
 
-                while (true) {
-
-                    counter.incrementAndGet();
-                    LOGGER.info("hey!");
-                }
-
+            while (true) {
+                counter.incrementAndGet();
+                LOGGER.info("hey!");
             }
+
         };
 
         for (int i = 0; i < 4; i++) {
@@ -90,89 +79,6 @@ public class ThreadPoolTestCase {
 
             this.incrementing++;
             return this.incrementing;
-        }
-    }
-
-    private static class AnExecutorService implements ExecutorService {
-
-        @Override
-        public void shutdown() {
-
-        }
-
-        @Override
-        public List<Runnable> shutdownNow() {
-
-            throw new UnsupportedOperationException("NIY");
-        }
-
-        @Override
-        public boolean isShutdown() {
-
-            throw new UnsupportedOperationException("NIY");
-        }
-
-        @Override
-        public boolean isTerminated() {
-
-            throw new UnsupportedOperationException("NIY");
-        }
-
-        @Override
-        public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
-
-            throw new UnsupportedOperationException("NIY");
-        }
-
-        @Override
-        public <T> Future<T> submit(Callable<T> task) {
-
-            throw new UnsupportedOperationException("NIY");
-        }
-
-        @Override
-        public <T> Future<T> submit(Runnable task, T result) {
-
-            throw new UnsupportedOperationException("NIY");
-        }
-
-        @Override
-        public Future<?> submit(Runnable task) {
-
-            throw new UnsupportedOperationException("NIY");
-        }
-
-        @Override
-        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks)
-                throws InterruptedException {
-
-            throw new UnsupportedOperationException("NIY");
-        }
-
-        @Override
-        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout,
-                TimeUnit unit) throws InterruptedException {
-
-            throw new UnsupportedOperationException("NIY");
-        }
-
-        @Override
-        public <T> T invokeAny(Collection<? extends Callable<T>> tasks)
-                throws InterruptedException, ExecutionException {
-
-            throw new UnsupportedOperationException("NIY");
-        }
-
-        @Override
-        public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit)
-                throws InterruptedException, ExecutionException, TimeoutException {
-
-            throw new UnsupportedOperationException("NIY");
-        }
-
-        @Override
-        public void execute(Runnable command) {
-
         }
     }
 }

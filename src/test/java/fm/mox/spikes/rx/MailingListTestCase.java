@@ -24,21 +24,9 @@ public class MailingListTestCase {
 
         final ConnectableObservable<Integer> publishedOrders = orders.publish();
 
-        final Func1<Integer, Boolean> pair = new Func1<Integer, Boolean>() {
-            @Override
-            public Boolean call(Integer integer) {
+        final Func1<Integer, Boolean> pair = integer -> integer % 2 == 0;
 
-                return integer % 2 == 0;
-            }
-        };
-
-        final Func1<Integer, Boolean> odd = new Func1<Integer, Boolean>() {
-            @Override
-            public Boolean call(Integer integer) {
-
-                return integer % 2 != 0;
-            }
-        };
+        final Func1<Integer, Boolean> odd = integer -> integer % 2 != 0;
         final Observer<Integer> brokerA = new Broker("A");
         publishedOrders.filter(pair).subscribe(brokerA);
 
