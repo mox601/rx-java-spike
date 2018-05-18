@@ -18,20 +18,16 @@ public class ObservablesThreadingTestCase {
     private static final Logger LOGGER = LoggerFactory.getLogger(
         ObservablesThreadingTestCase.class);
 
-    @Test(enabled = true)
+    @Test
     public void testName() throws Exception {
 
         //functions
-        final Func1<Long, Long> oneAdder = aLong -> {
+        final Func1<Long, Long> fastNop = aLong -> {
             LOGGER.info("fast: " + aLong);
             return aLong;
         };
-        final Func1<Long, Long> doubler = aLong -> {
-            try {
-                Thread.sleep(1000L);
-            } catch (InterruptedException e) {
-                //nop
-            }
+        final Func1<Long, Long> sleepingNop = aLong -> {
+            sleepSilently(1000L);
             LOGGER.info("slow: " + aLong);
             return aLong;
         };
@@ -41,10 +37,10 @@ public class ObservablesThreadingTestCase {
             .doOnNext(aLong -> LOGGER.info("tick: " + aLong));
 
         //still computation()
-        final Observable<Long> plusOne = aSource.map(oneAdder);
+        final Observable<Long> plusOne = aSource.map(fastNop);
 
         //runs on io()
-        final Observable<Long> doublePlusOneTick = plusOne.observeOn(Schedulers.io()).map(doubler);
+        final Observable<Long> doublePlusOneTick = plusOne.observeOn(Schedulers.io()).map(sleepingNop);
 
         //runs on io()
         final Subscription aSubscription = doublePlusOneTick.subscribe(new Subscriber<Long>() {
@@ -61,9 +57,7 @@ public class ObservablesThreadingTestCase {
 
             @Override
             public void onNext(Long aLong) {
-
                 LOGGER.info("consumed " + aLong);
-
             }
 
         });
@@ -79,9 +73,17 @@ public class ObservablesThreadingTestCase {
         final Subscription anotherSubscription = afterLogging
             .subscribe(aLong -> LOGGER.info("on computation " + aLong));
 
-        Thread.sleep(10000L);
+        sleepSilently(10000L);
 
         aSubscription.unsubscribe();
         anotherSubscription.unsubscribe();
+    }
+
+    private static void sleepSilently(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            //nop
+        }
     }
 }

@@ -1,20 +1,19 @@
 package fm.mox.spikes.rx;
 
-import fm.mox.spikes.rx.model.VideoDTO;
+import static org.testng.Assert.assertTrue;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import fm.mox.spikes.rx.model.VideoDTO;
 import rx.Observable;
 import rx.Subscription;
-import rx.functions.Action0;
-import rx.functions.Action1;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import static org.testng.Assert.assertTrue;
 
 /**
  * @author Matteo Moci ( matteo (dot) moci (at) gmail (dot) com )
@@ -62,9 +61,13 @@ public class ServiceTestCase {
                 .getVideoForUser("12345", "78965");
 
         final Subscription subscription = videoForUser.subscribe(
-                new OnNextItemLogger(),
-                new OnErrorThrowableMessageLogger(),
-                new OnCompleteElapsedTimeLogger(startNsec)
+            videoDTO -> LOGGER.info("received videoDto " + videoDTO.toString()),
+            throwable -> LOGGER.info("emsg: " + throwable.getMessage()),
+            () -> {
+                long elapsedTimeNanosec = System.nanoTime() - startNsec;
+                LOGGER.info("" + elapsedTimeNanosec);
+                assertTrue(true);
+            }
         );
 
         final Long end = System.nanoTime();
@@ -74,42 +77,6 @@ public class ServiceTestCase {
 
         Thread.sleep(1000L);
 
-    }
-
-    private static class OnCompleteElapsedTimeLogger implements Action0 {
-
-        private final long startNsec;
-
-        private OnCompleteElapsedTimeLogger(long startNsec) {
-
-            this.startNsec = startNsec;
-        }
-
-        @Override
-        public void call() {
-
-            long elapsedTimeNanosec = System.nanoTime() - this.startNsec;
-            LOGGER.info("" + elapsedTimeNanosec);
-            assertTrue(true);
-        }
-    }
-
-    private static class OnErrorThrowableMessageLogger implements Action1<Throwable> {
-
-        @Override
-        public void call(Throwable throwable) {
-
-//            LOGGER.info("emsg: " + throwable.getMessage());
-        }
-    }
-
-    private static class OnNextItemLogger implements Action1<VideoDTO> {
-
-        @Override
-        public void call(VideoDTO videoDTO) {
-
-//            LOGGER.info("received videoDto " + videoDTO.toString());
-        }
     }
 }
 
